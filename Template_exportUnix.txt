@@ -1,0 +1,11 @@
+#!/bin/bash
+mkdir obj
+
+protoc --plugin=protoc-gen-meta=protoc-gen-meta --proto_path ../proto --meta_out=./game.pb:. \
+{{.ProtoList}}
+
+tabtoy --mode=xls2pbt --pb=./game.pb --outdir=. --para=true --haltonerr=true \
+{{.TableList}}
+
+mergepbt --pb=./game.pb --out=./merge.pbt --msgtype=gamedef.TableConfig --pbtdir=.
+cat merge.pbt | protoc --encode=gamedef.TableConfig --proto_path ../proto ../proto/sys.proto > ./table.pbb
